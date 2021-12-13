@@ -7,9 +7,9 @@ import json
 from os.path import sep, isfile
 
 
-def write_log(date, ip, filename):
+def write_log(date, ip, filename, code):
     with open('logs.txt', 'a') as file:
-        file.write('\n'.join([date, ip, filename, '\n']))
+        file.write('\n'.join([date, ip, filename, code, '\n']))
 
 
 def get_date():
@@ -40,7 +40,8 @@ def receive_answer(request, addr):
     requested_file = this_path.split(sep)[-1]
     extension = this_path.split(".")[-1] if this_code == "OK" else "html"
     current_date = get_date()
-    write_log(current_date, str(addr[0]), requested_file)
+    write_log(current_date, str(addr[0]),
+              requested_file, str(dictionary[this_code]))
     answer = open(this_path, 'rb').read() if this_code == "OK" else "".encode()
     print(dictionary["sample"].format(dictionary[this_code], this_code, current_date,
                                       dictionary[extension], len(answer)))
