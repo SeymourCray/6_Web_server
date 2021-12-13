@@ -38,13 +38,15 @@ def receive_answer(request, addr):
     this_path = path(request)
     this_code = code(this_path)
     requested_file = this_path.split(sep)[-1]
-    extension = this_path.split(".")[-1]
+    extension = this_path.split(".")[-1] if this_code == "OK" else "html"
     current_date = get_date()
     write_log(current_date, str(addr[0]), requested_file)
-    with open(this_path, 'rb') as f:
-        answer = f.read()  
-        return dictionary["sample"].format(dictionary[this_code], this_code, current_date, dictionary[extension], len(answer)).encode() + answer
-    
+    answer = open(this_path, 'rb').read() if this_code == "OK" else "".encode()
+    print(dictionary["sample"].format(dictionary[this_code], this_code, current_date,
+                                      dictionary[extension], len(answer)))
+    return dictionary["sample"].format(dictionary[this_code], this_code, current_date,
+                                       dictionary[extension], len(answer)).encode() + answer
+
 
 def work(conn, addr):
     user_answer = conn.recv(dictionary["max_byte"]).decode()
